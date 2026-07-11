@@ -119,6 +119,7 @@ global $SITEURL;
 ?>
 
 <style>
+#customlinks {border: none !important;}
 .cl-widget-<?php echo $cl_uid; ?> { position: relative; }
 .cl-widget-<?php echo $cl_uid; ?> .cl-gear {
 	position: absolute; top: 0; right: 0;
