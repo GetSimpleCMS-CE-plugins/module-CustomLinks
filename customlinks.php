@@ -5,7 +5,7 @@
  * Description: Add your own custom action buttons/links to the dashboard.
  * Version: 1.0
  * Default W: 12
- * Default H: 3
+ * Default H: 2
  */
 if (!defined('IN_GS')) { die('You cannot load this page directly.'); }
 
