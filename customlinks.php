@@ -136,8 +136,8 @@ global $SITEURL;
 	display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
 }
 .cl-widget-<?php echo $cl_uid; ?> .cl-btn {
-	display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
-	padding: 12px 16px; min-width: 84px; border-radius: 4px;
+	display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+	padding: 6px 2px; min-width: 70px; border-radius: 4px;
 	text-decoration: none!important; text-align: center;
 	font-size: 12px; font-weight: 600; color: #fff;
 	transition: opacity .15s;
