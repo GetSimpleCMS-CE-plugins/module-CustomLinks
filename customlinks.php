@@ -170,16 +170,17 @@ global $SITEURL;
 .cl-widget-<?php echo $cl_uid; ?> .cl-row input[type=text],
 .cl-widget-<?php echo $cl_uid; ?> .cl-row select,
 .cl-widget-<?php echo $cl_uid; ?> .cl-row textarea {
-	border: 1px solid #d0d5dd; border-radius: 3px; padding: 4px 6px; font-size: 12px;
+	border: 1px solid #d0d5dd; border-radius: 6px!important; padding: 8px 10px; font-size: 12px;
 	background: #fff; font-family: inherit;
 }
+.div.cl-edit input {padding:5px;}
 .cl-widget-<?php echo $cl_uid; ?> .cl-row textarea { font-family: monospace; resize: vertical; }
-.cl-widget-<?php echo $cl_uid; ?> .cl-col-icon textarea { width: 100%; height: 32px; }
+.cl-widget-<?php echo $cl_uid; ?> .cl-col-icon textarea { width: 100%; height: 68px; -webkit-border-radius: 5px; -moz-border-radius: 5px; border-radius: 5px;}
 .cl-widget-<?php echo $cl_uid; ?> .cl-col-icon   { width: 200px; }
-.cl-widget-<?php echo $cl_uid; ?> .cl-col-type   { width: 100px; }
-.cl-widget-<?php echo $cl_uid; ?> .cl-col-title  { width: 200px; }
-.cl-widget-<?php echo $cl_uid; ?> .cl-col-target { width: 100px; }
-.cl-widget-<?php echo $cl_uid; ?> .cl-col-link   { flex: 1; min-width: 140px; }
+.cl-widget-<?php echo $cl_uid; ?> .cl-col-type   { width: 100px;  margin: 2em 0; }
+.cl-widget-<?php echo $cl_uid; ?> .cl-col-title  { width: 200px;  margin: 2em 0; }
+.cl-widget-<?php echo $cl_uid; ?> .cl-col-target { width: 100px;  margin: 2em 0; }
+.cl-widget-<?php echo $cl_uid; ?> .cl-col-link   { flex: 1; min-width: 140px;  margin: 2em 0; }
 .cl-widget-<?php echo $cl_uid; ?> .cl-col-actions { flex-direction: row; align-items: flex-end; gap: 2px; padding-top: 14px; }
 .cl-widget-<?php echo $cl_uid; ?> .cl-icon-btn {
 	width: 24px; height: 24px; display: flex; align-items: center; justify-content: center;
