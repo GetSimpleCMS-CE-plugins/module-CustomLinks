@@ -24,6 +24,8 @@ $i18n = [
 	'cl_lang_Move_up'				=>	'Move up',
 	'cl_lang_Move_down'			=>	'Move down',
 	'cl_lang_Add_Link'				=>	'Add Link',
+	'cl_lang_Add_Divider'			=>	'Add Divider',
+	'cl_lang_Divider'				=>	'Divider',
 
 	'cl_lang_Type_dark'			=>	'Dark',
 	'cl_lang_Type_blue'			=>	'Blue',

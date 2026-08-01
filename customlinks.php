@@ -75,6 +75,7 @@ $cl_csrf = hash('sha256', $SALT . '|' . $USR . '|customlinks');
 $cl_just_saved = false;
 
 if (!empty($_POST['customlinks_save']) && isset($_POST['cl_csrf']) && hash_equals($cl_csrf, (string)$_POST['cl_csrf'])) {
+	$kinds   = $_POST['cl_kind']   ?? [];
 	$titles  = $_POST['cl_title']  ?? [];
 	$urls    = $_POST['cl_link']   ?? [];
 	$types   = $_POST['cl_type']   ?? [];
@@ -84,8 +85,15 @@ if (!empty($_POST['customlinks_save']) && isset($_POST['cl_csrf']) && hash_equal
 	$allowed_targets = cl_allowed_targets();
 
 	$new_links = [];
-	foreach ($titles as $i => $t) {
-		$t = trim(strip_tags((string)$t));
+	foreach ($kinds as $i => $kind) {
+		$kind = ($kind === 'divider') ? 'divider' : 'link';
+
+		if ($kind === 'divider') {
+			$new_links[] = ['kind' => 'divider'];
+			continue;
+		}
+
+		$t = trim(strip_tags((string)($titles[$i] ?? '')));
 		$u = trim((string)($urls[$i] ?? ''));
 		if ($t === '' || $u === '') continue; // skip incomplete rows
 
@@ -102,6 +110,7 @@ if (!empty($_POST['customlinks_save']) && isset($_POST['cl_csrf']) && hash_equal
 		if ($icon !== '' && stripos($icon, '<svg') === false) $icon = '';
 
 		$new_links[] = [
+			'kind'   => 'link',
 			'title'  => $t,
 			'link'   => $u,
 			'type'   => $type,
@@ -154,6 +163,10 @@ global $SITEURL;
 .cl-widget-<?php echo $cl_uid; ?> .cl-btn-red    { background: #d9534f; }
 .cl-widget-<?php echo $cl_uid; ?> .cl-btn-gray   { background: #7a8794; }
 .cl-widget-<?php echo $cl_uid; ?> .cl-empty { color: #999; font-size: 13px; }
+.cl-widget-<?php echo $cl_uid; ?> .cl-divider {
+	width: 1px; align-self: center; height: 34px;
+	background: #d7dbe0; margin: 0 12px; flex-shrink: 0;
+}
 .cl-widget-<?php echo $cl_uid; ?> .cl-saved-msg { color: #28a745; font-size: 12px; font-weight: 600; margin-bottom: 8px; }
 
 .cl-widget-<?php echo $cl_uid; ?> .cl-edit { display: none; }
@@ -189,6 +202,16 @@ global $SITEURL;
 .cl-widget-<?php echo $cl_uid; ?> .cl-icon-btn:hover { background: #eef1f4; }
 .cl-widget-<?php echo $cl_uid; ?> .cl-icon-btn.cl-remove-btn { color: #d9534f; }
 
+.cl-widget-<?php echo $cl_uid; ?> .cl-row-divider {
+	align-items: center; justify-content: space-between; padding: 6px 10px;
+	background: #eef1f4;
+}
+.cl-widget-<?php echo $cl_uid; ?> .cl-divider-label {
+	font-size: 11px; text-transform: uppercase; letter-spacing: .04em;
+	color: #8a94a0; font-weight: 700;
+}
+.cl-widget-<?php echo $cl_uid; ?> .cl-row-divider .cl-col-actions { padding-top: 0; }
+
 .cl-widget-<?php echo $cl_uid; ?> .cl-edit-actions { margin-top: 4px; display: flex; align-items: center; gap: 10px; }
 .cl-widget-<?php echo $cl_uid; ?> .cl-add-btn,
 .cl-widget-<?php echo $cl_uid; ?> .cl-save-btn {
@@ -217,6 +240,13 @@ global $SITEURL;
 		<?php else: ?>
 			<div class="cl-btn-row">
 				<?php foreach ($cl_links as $link):
+					$kind = $link['kind'] ?? 'link';
+					if ($kind === 'divider'):
+				?>
+					<span class="cl-divider" aria-hidden="true"></span>
+				<?php
+						continue;
+					endif;
 					$type   = in_array($link['type'] ?? '', cl_allowed_types(), true) ? $link['type'] : 'blue';
 					$href   = htmlspecialchars($link['link'] ?? '#');
 					$title  = htmlspecialchars($link['title'] ?? '');
@@ -248,21 +278,29 @@ global $SITEURL;
 				<?php if (empty($cl_links)): ?>
 					<div class="cl-empty" style="margin-bottom:8px;"><?php echo htmlspecialchars($i18n_m('cl_lang_No_links_yet')); ?></div>
 				<?php else: ?>
-					<?php foreach ($cl_links as $link): ?>
+					<?php foreach ($cl_links as $link):
+						$kind = $link['kind'] ?? 'link';
+						if ($kind === 'divider'):
+					?>
+						<div class="cl-row cl-row-divider">
+							<input type="hidden" name="cl_kind[]" value="divider">
+							<input type="hidden" name="cl_type[]" value="">
+							<input type="hidden" name="cl_icon[]" value="">
+							<input type="hidden" name="cl_title[]" value="">
+							<input type="hidden" name="cl_link[]" value="">
+							<input type="hidden" name="cl_target[]" value="">
+							<div class="cl-divider-label"><?php echo htmlspecialchars($i18n_m('cl_lang_Divider')); ?></div>
+							<div class="cl-col cl-col-actions">
+								<button type="button" class="cl-icon-btn cl-move-up" title="<?php echo htmlspecialchars($i18n_m('cl_lang_Move_up')); ?>">&uarr;</button>
+								<button type="button" class="cl-icon-btn cl-move-down" title="<?php echo htmlspecialchars($i18n_m('cl_lang_Move_down')); ?>">&darr;</button>
+								<button type="button" class="cl-icon-btn cl-remove-btn" title="<?php echo htmlspecialchars($i18n_m('cl_lang_Remove')); ?>">&times;</button>
+							</div>
+						</div>
+					<?php
+							continue;
+						endif;
+					?>
 						<div class="cl-row">
-							<div class="cl-col cl-col-icon">
-								<label><?php echo htmlspecialchars($i18n_m('cl_lang_Icon_SVG')); ?> <a href="https://icon-sets.iconify.design/" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;" width="1.3em" height="1.3em" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path fill="currentColor" d="M11 17H7q-2.075 0-3.537-1.463T2 12t1.463-3.537T7 7h4v2H7q-1.25 0-2.125.875T4 12t.875 2.125T7 15h4zm-3-4v-2h8v2zm5 4v-2h4q1.25 0 2.125-.875T20 12t-.875-2.125T17 9h-4V7h4q2.075 0 3.538 1.463T22 12t-1.463 3.538T17 17z"/></svg></a></label>
-								<textarea name="cl_icon[]" placeholder="<?php echo htmlspecialchars($i18n_m('cl_lang_Icon_placeholder')); ?>"><?php echo htmlspecialchars($link['icon'] ?? ''); ?></textarea>
-							</div>
-							
-							<div class="cl-col cl-col-type">
-								<label><?php echo htmlspecialchars($i18n_m('cl_lang_Type')); ?></label>
-								<select name="cl_type[]">
-									<?php foreach (cl_allowed_types() as $t): ?>
-									<option value="<?php echo $t; ?>"<?php echo (($link['type'] ?? '') === $t) ? ' selected' : ''; ?>><?php echo htmlspecialchars($i18n_m('cl_lang_Type_' . $t)); ?></option>
-									<?php endforeach; ?>
-								</select>
-							</div>
 							
 							<div class="cl-col cl-col-title">
 								<label><?php echo htmlspecialchars($i18n_m('cl_lang_Link_Title')); ?></label>
@@ -283,6 +321,22 @@ global $SITEURL;
 								</select>
 							</div>
 							
+							<input type="hidden" name="cl_kind[]" value="link">
+							
+							<div class="cl-col cl-col-type">
+								<label><?php echo htmlspecialchars($i18n_m('cl_lang_Type')); ?></label>
+								<select name="cl_type[]">
+									<?php foreach (cl_allowed_types() as $t): ?>
+									<option value="<?php echo $t; ?>"<?php echo (($link['type'] ?? '') === $t) ? ' selected' : ''; ?>><?php echo htmlspecialchars($i18n_m('cl_lang_Type_' . $t)); ?></option>
+									<?php endforeach; ?>
+								</select>
+							</div>
+							
+							<div class="cl-col cl-col-icon">
+								<label><?php echo htmlspecialchars($i18n_m('cl_lang_Icon_SVG')); ?> <a href="https://icon-sets.iconify.design/" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;" width="1.3em" height="1.3em" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path fill="currentColor" d="M11 17H7q-2.075 0-3.537-1.463T2 12t1.463-3.537T7 7h4v2H7q-1.25 0-2.125.875T4 12t.875 2.125T7 15h4zm-3-4v-2h8v2zm5 4v-2h4q1.25 0 2.125-.875T20 12t-.875-2.125T17 9h-4V7h4q2.075 0 3.538 1.463T22 12t-1.463 3.538T17 17z"/></svg></a></label>
+								<textarea name="cl_icon[]" placeholder="<?php echo htmlspecialchars($i18n_m('cl_lang_Icon_placeholder')); ?>"><?php echo htmlspecialchars($link['icon'] ?? ''); ?></textarea>
+							</div>
+							
 							<div class="cl-col cl-col-actions">
 								<button type="button" class="cl-icon-btn cl-move-up" title="<?php echo htmlspecialchars($i18n_m('cl_lang_Move_up')); ?>">&uarr;</button>
 								<button type="button" class="cl-icon-btn cl-move-down" title="<?php echo htmlspecialchars($i18n_m('cl_lang_Move_down')); ?>">&darr;</button>
@@ -295,6 +349,7 @@ global $SITEURL;
 
 			<div class="cl-edit-actions">
 				<button type="button" class="cl-add-btn" id="<?php echo $cl_uid; ?>-add">+ <?php echo htmlspecialchars($i18n_m('cl_lang_Add_Link')); ?></button>
+				<button type="button" class="cl-add-btn" id="<?php echo $cl_uid; ?>-add-divider">+ <?php echo htmlspecialchars($i18n_m('cl_lang_Add_Divider')); ?></button>
 				<button type="submit" class="cl-save-btn"><?php echo htmlspecialchars($i18n_m('cl_lang_Save')); ?></button>
 				<button type="button" class="cl-add-btn" id="<?php echo $cl_uid; ?>-done"><?php echo htmlspecialchars($i18n_m('cl_lang_Done')); ?></button>
 			</div>
@@ -304,14 +359,19 @@ global $SITEURL;
 
 <template id="<?php echo $cl_uid; ?>-row-template">
 	<div class="cl-row">
-		<div class="cl-col cl-col-type">
-			<label><?php echo htmlspecialchars($i18n_m('cl_lang_Type')); ?></label>
-			<select name="cl_type[]">
-				<?php foreach (cl_allowed_types() as $t): ?>
-				<option value="<?php echo $t; ?>"><?php echo htmlspecialchars($i18n_m('cl_lang_Type_' . $t)); ?></option>
-				<?php endforeach; ?>
-			</select>
+	
+		<input type="hidden" name="cl_kind[]" value="link">
+		
+		<div class="cl-col cl-col-title">
+			<label><?php echo htmlspecialchars($i18n_m('cl_lang_Link_Title')); ?></label>
+			<input type="text" name="cl_title[]" placeholder="<?php echo htmlspecialchars($i18n_m('cl_lang_Title_placeholder')); ?>">
 		</div>
+		
+		<div class="cl-col cl-col-link">
+			<label><?php echo htmlspecialchars($i18n_m('cl_lang_Link_URL')); ?></label>
+			<input type="text" name="cl_link[]" placeholder="<?php echo htmlspecialchars($i18n_m('cl_lang_Link_placeholder')); ?>">
+		</div>
+		
 		<div class="cl-col cl-col-target">
 			<label><?php echo htmlspecialchars($i18n_m('cl_lang_Target')); ?></label>
 			<select name="cl_target[]">
@@ -320,18 +380,39 @@ global $SITEURL;
 				<?php endforeach; ?>
 			</select>
 		</div>
+		
+		<div class="cl-col cl-col-type">
+			<label><?php echo htmlspecialchars($i18n_m('cl_lang_Type')); ?></label>
+			<select name="cl_type[]">
+				<?php foreach (cl_allowed_types() as $t): ?>
+				<option value="<?php echo $t; ?>"><?php echo htmlspecialchars($i18n_m('cl_lang_Type_' . $t)); ?></option>
+				<?php endforeach; ?>
+			</select>
+		</div>
+		
 		<div class="cl-col cl-col-icon">
-			<label><?php echo htmlspecialchars($i18n_m('cl_lang_Icon_SVG')); ?></label>
+			<label><?php echo htmlspecialchars($i18n_m('cl_lang_Icon_SVG')); ?> <a href="https://icon-sets.iconify.design/" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" style="vertical-align:middle;" width="1.3em" height="1.3em" viewBox="0 0 24 24"><path d="M0 0h24v24H0z" fill="none"/><path fill="currentColor" d="M11 17H7q-2.075 0-3.537-1.463T2 12t1.463-3.537T7 7h4v2H7q-1.25 0-2.125.875T4 12t.875 2.125T7 15h4zm-3-4v-2h8v2zm5 4v-2h4q1.25 0 2.125-.875T20 12t-.875-2.125T17 9h-4V7h4q2.075 0 3.538 1.463T22 12t-1.463 3.538T17 17z"/></svg></a></label>
 			<textarea name="cl_icon[]" placeholder="<?php echo htmlspecialchars($i18n_m('cl_lang_Icon_placeholder')); ?>"></textarea>
 		</div>
-		<div class="cl-col cl-col-title">
-			<label><?php echo htmlspecialchars($i18n_m('cl_lang_Link_Title')); ?></label>
-			<input type="text" name="cl_title[]" placeholder="<?php echo htmlspecialchars($i18n_m('cl_lang_Title_placeholder')); ?>">
+		
+		<div class="cl-col cl-col-actions">
+			<button type="button" class="cl-icon-btn cl-move-up" title="<?php echo htmlspecialchars($i18n_m('cl_lang_Move_up')); ?>">&uarr;</button>
+			<button type="button" class="cl-icon-btn cl-move-down" title="<?php echo htmlspecialchars($i18n_m('cl_lang_Move_down')); ?>">&darr;</button>
+			<button type="button" class="cl-icon-btn cl-remove-btn" title="<?php echo htmlspecialchars($i18n_m('cl_lang_Remove')); ?>">&times;</button>
 		</div>
-		<div class="cl-col cl-col-link">
-			<label><?php echo htmlspecialchars($i18n_m('cl_lang_Link_URL')); ?></label>
-			<input type="text" name="cl_link[]" placeholder="<?php echo htmlspecialchars($i18n_m('cl_lang_Link_placeholder')); ?>">
-		</div>
+		
+	</div>
+</template>
+
+<template id="<?php echo $cl_uid; ?>-divider-template">
+	<div class="cl-row cl-row-divider">
+		<input type="hidden" name="cl_kind[]" value="divider">
+		<input type="hidden" name="cl_type[]" value="">
+		<input type="hidden" name="cl_icon[]" value="">
+		<input type="hidden" name="cl_title[]" value="">
+		<input type="hidden" name="cl_link[]" value="">
+		<input type="hidden" name="cl_target[]" value="">
+		<div class="cl-divider-label"><?php echo htmlspecialchars($i18n_m('cl_lang_Divider')); ?></div>
 		<div class="cl-col cl-col-actions">
 			<button type="button" class="cl-icon-btn cl-move-up" title="<?php echo htmlspecialchars($i18n_m('cl_lang_Move_up')); ?>">&uarr;</button>
 			<button type="button" class="cl-icon-btn cl-move-down" title="<?php echo htmlspecialchars($i18n_m('cl_lang_Move_down')); ?>">&darr;</button>
@@ -349,8 +430,10 @@ global $SITEURL;
 	var gear   = document.getElementById(uid + '-gear');
 	var doneBtn = document.getElementById(uid + '-done');
 	var addBtn  = document.getElementById(uid + '-add');
+	var addDividerBtn = document.getElementById(uid + '-add-divider');
 	var rows    = document.getElementById(uid + '-rows');
 	var tmpl    = document.getElementById(uid + '-row-template');
+	var dividerTmpl = document.getElementById(uid + '-divider-template');
 
 	function toggleEdit() {
 		widget.classList.toggle('cl-editing');
@@ -378,16 +461,18 @@ global $SITEURL;
 
 	rows.querySelectorAll('.cl-row').forEach(bindRow);
 
-	if (addBtn && tmpl) {
-		addBtn.addEventListener('click', function() {
-			// Remove "no links yet" placeholder if present
-			var empty = rows.querySelector('.cl-empty');
-			if (empty) empty.parentNode.removeChild(empty);
+	function addRowFrom(sourceTmpl) {
+		if (!sourceTmpl) return;
+		// Remove "no links yet" placeholder if present
+		var empty = rows.querySelector('.cl-empty');
+		if (empty) empty.parentNode.removeChild(empty);
 
-			var clone = tmpl.content.cloneNode(true);
-			rows.appendChild(clone);
-			bindRow(rows.lastElementChild);
-		});
+		var clone = sourceTmpl.content.cloneNode(true);
+		rows.appendChild(clone);
+		bindRow(rows.lastElementChild);
 	}
+
+	if (addBtn) addBtn.addEventListener('click', function() { addRowFrom(tmpl); });
+	if (addDividerBtn) addDividerBtn.addEventListener('click', function() { addRowFrom(dividerTmpl); });
 })();
 </script>
