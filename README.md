@@ -4,6 +4,8 @@ A [Dashboard](https://github.com/GetSimpleCMS-CE/GetSimpleCMS-CE) module for Get
 
 Built by [risingisland](https://ko-fi.com/ericmontgomery).
 
+<img width="950" alt="image" src="https://github.com/user-attachments/assets/1a0a4159-4e86-4c9a-bd08-730fd4d9b450" />
+
 ## Features
 
 - Add unlimited custom link buttons with your own icon, title, link, color, and target
