@@ -9,8 +9,13 @@ $i18n = [
 	'cl_lang_Done'					=>	'Listo',
 	'cl_lang_Save'					=>	'Guardar',
 	'cl_lang_Saved'				=>	'¡Guardado!',
+	'cl_lang_Modal_Title'			=>	'Administrar Enlaces Personalizados',
+	'cl_lang_Close'				=>	'Cerrar',
 
 	'cl_lang_Type'					=>	'Tipo',
+	'cl_lang_Shade'				=>	'Tono',
+	'cl_lang_Shade_normal'			=>	'Normal',
+	'cl_lang_Shade_light'			=>	'Claro',
 	'cl_lang_Target'				=>	'Destino',
 	'cl_lang_Target_same'			=>	'Misma pestaña',
 	'cl_lang_Target_new'			=>	'Nueva pestaña',
@@ -33,6 +38,9 @@ $i18n = [
 	'cl_lang_Type_green'			=>	'Verde',
 	'cl_lang_Type_red'				=>	'Rojo',
 	'cl_lang_Type_gray'			=>	'Gris',
+	'cl_lang_Type_purple'			=>	'Morado',
+	'cl_lang_Type_teal'			=>	'Verde azulado',
+	'cl_lang_Type_pink'			=>	'Rosa',
 
 	'cl_lang_No_links_yet'			=>	'Aún no hay enlaces. Haz clic en el icono de engranaje para añadir tu primer botón.',
 	'cl_lang_No_links_view'		=>	'Todavía no se han añadido enlaces.',

@@ -9,8 +9,13 @@ $i18n = [
 	'cl_lang_Done'					=>	'Done',
 	'cl_lang_Save'					=>	'Save',
 	'cl_lang_Saved'				=>	'Saved!',
+	'cl_lang_Modal_Title'			=>	'Manage Custom Links',
+	'cl_lang_Close'				=>	'Close',
 
 	'cl_lang_Type'					=>	'Type',
+	'cl_lang_Shade'				=>	'Shade',
+	'cl_lang_Shade_normal'			=>	'Normal',
+	'cl_lang_Shade_light'			=>	'Light',
 	'cl_lang_Target'				=>	'Target',
 	'cl_lang_Target_same'			=>	'Same tab',
 	'cl_lang_Target_new'			=>	'New tab',
@@ -33,6 +38,9 @@ $i18n = [
 	'cl_lang_Type_green'			=>	'Green',
 	'cl_lang_Type_red'				=>	'Red',
 	'cl_lang_Type_gray'			=>	'Gray',
+	'cl_lang_Type_purple'			=>	'Purple',
+	'cl_lang_Type_teal'			=>	'Teal',
+	'cl_lang_Type_pink'			=>	'Pink',
 
 	'cl_lang_No_links_yet'			=>	'No links yet. Click the gear icon to add your first button.',
 	'cl_lang_No_links_view'		=>	'No links have been added yet.',
