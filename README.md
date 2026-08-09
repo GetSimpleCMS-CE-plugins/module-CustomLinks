@@ -47,6 +47,8 @@ plugins/
 
 Once enabled, the Custom Links tile appears on your dashboard. Click the gear icon in the top-right corner of the tile to open the editor.
 
+<img width="1200" alt="image" src="https://github.com/user-attachments/assets/ab8729a4-b0a1-4334-bab5-acb1930ebc0f" />
+
 ### Adding a link
 
 Click **+ Add Link** and fill in:
