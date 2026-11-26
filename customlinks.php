@@ -3,7 +3,7 @@
  * Module Name: Custom Links
  * Module ID: customlinks
  * Description: Add your own custom action buttons/links to the dashboard.
- * Version: 1.1
+ * Version: 1.2
  * Default W: 12
  * Default H: 2
  */
@@ -205,7 +205,7 @@ global $SITEURL;
 	width: 1px; align-self: center; height: 34px;
 	background: #d7dbe0; margin: 0 12px; flex-shrink: 0;
 }
-.cl-widget-<?php echo $cl_uid; ?> .cl-saved-msg { color: #28a745; font-size: 12px; font-weight: 600; margin-bottom: 8px; }
+.cl-widget-<?php echo $cl_uid; ?> .cl-saved-msg { color: #28a745; font-size: 12px; font-weight: 600; margin-bottom: 8px; transition: opacity .6s ease; }
 
 .cl-widget-<?php echo $cl_uid; ?> .cl-modal-backdrop {
 	display: none; position: fixed; inset: 0; background: rgba(20,22,26,.5); z-index: 100000;
@@ -289,7 +289,7 @@ global $SITEURL;
 	<!-- VIEW MODE -->
 	<div class="cl-view">
 		<?php if ($cl_just_saved): ?>
-			<div class="cl-saved-msg">✓ <?php echo htmlspecialchars($i18n_m('cl_lang_Saved')); ?></div>
+			<div class="cl-saved-msg" id="<?php echo $cl_uid; ?>-saved">✓ <?php echo htmlspecialchars($i18n_m('cl_lang_Saved')); ?></div>
 		<?php endif; ?>
 
 		<?php if (empty($cl_links)): ?>
@@ -514,6 +514,15 @@ global $SITEURL;
 	var uid = '<?php echo $cl_uid; ?>';
 	var widget = document.getElementById(uid);
 	var modalRoot = document.getElementById(uid + '-modal-root');
+
+	var savedMsg = document.getElementById(uid + '-saved');
+	if (savedMsg) {
+		setTimeout(function() {
+			savedMsg.style.opacity = '0';
+			setTimeout(function() { savedMsg.style.display = 'none'; }, 700);
+		}, 3000);
+	}
+
 	if (!widget || !modalRoot) return;
 
 	document.body.appendChild(modalRoot);
